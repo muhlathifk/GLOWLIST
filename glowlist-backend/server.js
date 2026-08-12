@@ -1,6 +1,9 @@
 const express = require('express');
+const cors = require('cors');
 const app = express();
 const mysql = require('mysql2');
+
+app.use(cors());
 
 const db = mysql.createConnection({
     host: 'localhost',
@@ -28,6 +31,23 @@ app.get('/produk', (req,res) => {
     db.query(sql, (err, results) => {
         if (err) return res.status(500).json({ error: err });
         res.json(results);
+    });
+});
+
+app.post('/produk', (req, res) => {
+    const { judul, deskripsi, harga, id_kategori } = req.body;
+
+    if (!judul || !harga) {
+        return res.status(400).json({ message: 'Judul dan harga wajib di isi'});
+    }
+
+    const sql = 'INSERT INTO produk (judul, deskripsi, harga, id_kategori, tgl_input) VALUES (?, ?, ?, ?, NOW())';
+    db.query(sql, [judul, deskripsi, harga, id_kategori], (err, results) => {
+        if (err) return res.status(500).json({ error: err.sqlMessage });
+        res.json({
+            message: 'Produk berhasil ditambahkan!',
+            id_produk: results.insertId
+        });
     });
 });
 
