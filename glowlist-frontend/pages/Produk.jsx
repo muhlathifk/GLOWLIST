@@ -42,8 +42,8 @@ export default function Produk() {
                 <tbody>
                     {produk.length > 0 ? (
                         produk.map((item) => (
-                            <tr key={item.id.produk}>
-                                <td>{item.id.produk}</td>
+                            <tr key={item.id_produk}>
+                                <td>{item.id_produk}</td>
                                 <td>{item.judul}</td>
                                 <td>{item.deskripsi}</td>
                                 <td>Rp {item.harga}</td>
