@@ -22,11 +22,11 @@ db.connect(err => {
 const PORT = 3001;
 app.use(express.json());
 
-app.get('/', (req,res) => {
+app.get('/', (req, res) => {
     res.send('Selamat Datang di Glowlist API sudah berjalan');
 });
 
-app.get('/produk', (req,res) => {
+app.get('/produk', (req, res) => {
     const sql = 'Select * FROM produk';
     db.query(sql, (err, results) => {
         if (err) return res.status(500).json({ error: err });
@@ -38,10 +38,10 @@ app.post('/produk', (req, res) => {
     const { judul, deskripsi, harga, id_kategori } = req.body;
 
     if (!judul || !harga) {
-        return res.status(400).json({ message: 'Judul dan harga wajib di isi'});
-    
+        return res.status(400).json({ message: 'Judul dan harga wajib di isi' });
+
         if (!deskripsi) {
-        return res.status(400).json({ message: 'Deskripsi wajib di isi'});
+            return res.status(400).json({ message: 'Deskripsi wajib di isi' });
         }
     }
 
@@ -55,7 +55,44 @@ app.post('/produk', (req, res) => {
     });
 });
 
-app.get('/kategori', (req,res) => {
+app.put('/produk/:id_produk', (req, res) => {
+    const { id_produk } = req.params;
+    const { judul, deskripsi, harga, id_kategori } = req.body;
+
+    if (!judul || !harga) {
+        return res.status(400).json({ message: 'Judul dan harga wajib diisi' });
+    }
+
+    if (!deskripsi ) {
+        return res.status(400).json({ message: 'deskripsi wajib diisi'});
+    }
+
+    const sql = 'UPDATE produk SET judul=?, deskripsi=?, harga=?, id_kategori=? WHERE id_produk=?';
+    db.query(sql, [judul, deskripsi, harga, id_kategori, id_produk], (err, results) => {
+        if (err) return res.status(500).json({ error: err.sqlMessage });
+        res.json({ message: 'Produk berhasil di update!' });
+    });
+});
+
+app.get('/produk/:id_produk', (req, res) => {
+    const { id_produk } = req.params;
+    const sql = 'SELECT * FROM produk WHERE id_produk = ?';
+    db.query(sql, [id_produk], (err, results) => {
+        if (err) return res.status(500).json({ error: err });
+        res.json(results);
+    });
+});
+
+app.delete('/produk/:id_produk', (req, res) => {
+    const { id_produk } = req.params;
+    const sql = 'DELETE FROM produk WHERE id_produk = ?';
+    db.query(sql, [id_produk], (err, results) => {
+        if (err) return res.status(500).json({ error: err.sqlMessage });
+        res.json({ message: 'Produk berhasil dihapus!' });
+    });
+});
+
+app.get('/kategori', (req, res) => {
     const sql = 'Select * FROM kategori';
     db.query(sql, (err, results) => {
         if (err) return res.status(500).json({ error: err });
