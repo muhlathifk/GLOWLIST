@@ -40,7 +40,7 @@ export default function EditProduk() {
     if (loading) {
         return <div className="container mt-4">Loading...</div>;
     }
-    
+
     return (
         <div className="container mt-4">
             <h2>Edit Produk</h2>
@@ -51,6 +51,22 @@ export default function EditProduk() {
                         type="text"
                         name="judul"
                         value={formData.judul}
+                        onChange={handleChange}
+                        className="form-control"
+                    />
+                    <label className="form-label">Deskripsi</label>
+                    <input
+                        type="text"
+                        name="deskripsi"
+                        value={formData.deskripsi}
+                        onChange={handleChange}
+                        className="form-control"
+                    />
+                    <label className="form-label">harga</label>
+                    <input
+                        type="text"
+                        name="harga"
+                        value={formData.harga}
                         onChange={handleChange}
                         className="form-control"
                     />

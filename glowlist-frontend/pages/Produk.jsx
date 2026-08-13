@@ -1,24 +1,26 @@
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 export default function Produk() {
     const [produk, setProduk] = useState([]);
     const [loading, setLoading] = useState(true);
+    
+    const navigate = useNavigate();
 
     const getProduk = async () => {
-      try {
-        const res = await fetch("http://localhost:3001/produk");
-        const data = await res.json();
-        setProduk(data);
-      } catch (err) {
-        console.error("Gagal fetch data:", err);
-      } finally {
-        setLoading(false);
-      }
+        try {
+            const res = await fetch("http://localhost:3001/produk");
+            const data = await res.json();
+            setProduk(data);
+        } catch (err) {
+            console.error("Gagal fetch data:", err);
+        } finally {
+            setLoading(false);
+        }
     };
 
     useEffect(() => {
-      getProduk();  
+        getProduk();
     }, []);
 
     const handleDelete = async (id) => {
@@ -27,7 +29,7 @@ export default function Produk() {
                 const res = await fetch(`http://localhost:3001/produk/${id}`, {
                     method: "DELETE",
                 });
-                if (res.oke) {
+                if (res.ok) {
                     alert("Produk berhasil dihapus");
                     getProduk(); // ambil ulang data terbaru
                 } else {
@@ -41,7 +43,7 @@ export default function Produk() {
     };
 
     const handleEdit = (id) => {
-        naavigate(`/produk/edit/${id}`);
+        navigate(`/produk/edit/${id}`);
     };
 
     if (loading) {
@@ -53,7 +55,7 @@ export default function Produk() {
             <div className="d-flex justify-content-between align-items-center mb-3">
                 <h2>Daftar Produk Glowlist ✨</h2>
                 <Link to="/produk/tambah" className="btn btn-primary">
-                  + Tambah Produk
+                    + Tambah Produk
                 </Link>
             </div>
 
@@ -64,6 +66,7 @@ export default function Produk() {
                         <th>Judul</th>
                         <th>Deskripsi</th>
                         <th>Harga</th>
+                        <th>Aksi</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -74,28 +77,28 @@ export default function Produk() {
                                 <td>{item.judul}</td>
                                 <td>{item.deskripsi}</td>
                                 <td>Rp {item.harga}</td>
+                                <td>
+                                    <button
+                                        className="btn btn-warning btn-sm me-2"
+                                        onClick={() => handleEdit(item.id_produk)}
+                                    >
+                                        EDIT
+                                    </button>
+                                    <button
+                                        className="btn btn-danger btn-sm"
+                                        onClick={() => handleDelete(item.id_produk)}
+                                    >
+                                        DELETE
+                                    </button>
+                                </td>
                             </tr>
                         ))
                     ) : (
-                     <tr>
-                        <td colSpan="4" className="text-center">
-                           Belum ada produk
-                        </td>
-                        <td>
-                            <button
-                                className="btn btn-warning btn-sm me-2"
-                                onClick={() => handleEdit(item.id_produk)}
-                            >
-                                EDIT
-                            </button>
-                            <button
-                                className="btn btn-danger btn-sm"
-                                onClick={() => handleDelete(item.id_produk)}
-                            >
-                                DELETE
-                            </button>
-                        </td>
-                     </tr>
+                        <tr>
+                            <td colSpan="4" className="text-center">
+                                Belum ada produk
+                            </td>
+                        </tr>
                     )}
                 </tbody>
             </table>
